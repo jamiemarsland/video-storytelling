@@ -1,0 +1,7 @@
+{
+  "name": "video-storytelling",
+  "version": "1.0.0",
+  "description": "Turn narrated explainer and history videos from a slideshow into a story: cold open, a person to follow, a plant and payoff, a ticking clock, paced edits, natural voice and a score that follows the story.",
+  "author": { "name": "James Marsland" },
+  "keywords": ["video", "storytelling", "youtube", "script", "explainer", "narration", "hyperframes", "elevenlabs"]
+}
