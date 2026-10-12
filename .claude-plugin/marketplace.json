@@ -1,7 +1,14 @@
 {
   "name": "video-storytelling",
-  "owner": { "name": "James Marsland" },
+  "description": "Storytelling for narrated explainer and history videos.",
+  "owner": {
+    "name": "James Marsland"
+  },
   "plugins": [
-    { "name": "video-storytelling", "source": "./", "description": "Story structure, script, edit and sound passes for narrated explainer videos." }
+    {
+      "name": "video-storytelling",
+      "source": "./",
+      "description": "Story structure, script, edit and sound passes for narrated explainer videos."
+    }
   ]
 }
