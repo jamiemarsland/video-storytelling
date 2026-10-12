@@ -12,7 +12,7 @@ Turns narrated explainer, history and tutorial videos from "a slideshow with a v
 ## Install
 
 ```
-/plugin marketplace add <github-user>/video-storytelling
+/plugin marketplace add jamiemarsland/video-storytelling
 /plugin install video-storytelling@video-storytelling
 ```
 
