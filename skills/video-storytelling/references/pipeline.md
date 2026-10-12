@@ -18,13 +18,13 @@ b(scene, look, say, text, cuts, orange=None, hold=0.0, box=None, date=None, fx=(
 ## Voice: one take per scene, cut at the gaps
 
 1. Join the scene's `say` strings with spaces and send them to `POST /v1/text-to-speech/{voice}/with-timestamps` with `model_id: eleven_v3` and `stability: 0.5`. Use 0.0 for more expression, 1.0 for steadier delivery.
-2. The response's `alignment.character_start_times_seconds` covers every character, tags included. For each line:
-   - find the first character after any leading `[tag]`, and the last character;
-   - cut the take at the midpoint of the gap between this line and the next;
-   - add a 20–80 ms fade at each cut.
-3. Store each line's word start times: regex `\[[^\]]*\]|[^\s\[]+`, skipping tags. Map the headline words onto them in proportion, so the captions land on the spoken words.
-4. On the timeline: line start = cursor, line end = start + segment length + hold. Place each segment with `adelay` in an ffmpeg `amix`.
-5. Check with speech-to-text (`/v1/speech-to-text`, `scribe_v1`): no tags read aloud, names said correctly.
+2. **Don't cut on v3's own alignment.** Its character timings run up to about 0.7 s early. Cutting on them clips the ends of words, or plays a sliver twice ("a a", "every, every").
+3. Instead, run speech-to-text over the take (`/v1/speech-to-text`, `scribe_v1`, word timestamps). Match the heard words to the script words with a sequence matcher. Normalise both sides first: numbers to words ("1999" → "nineteen ninety nine"), "L-Z-W" → "lzw".
+4. For each line boundary, take the end of the line's last heard word and the start of the next line's first heard word. Cut in the middle of the longest quiet run (20 ms frames under about -40 dB) between them.
+5. Cut the take **end to end**: each line starts exactly where the previous one stopped. Never pull a start earlier "for safety", because that re-plays audio. Assert it in code.
+6. Use the same heard word starts as caption times, so each word appears when it's said.
+7. Before rendering, transcribe every line's clip and compare its first two and last two words with the script. Any extra, missing or doubled word at an edge is a cutting error.
+8. Place each clip with `adelay`, then `aresample=async=1:first_pts=0`, in an ffmpeg `amix`. Without the resample, a delayed bed can silently start at 0:00.
 
 ## Score: one piece composed to the edit
 
